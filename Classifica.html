@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifica Ufficiale Falsa - Minecraft</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Font Minecraft */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('https://fonts.cdnfonts.com/css/minecraft-4') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --primary: #42b883;
+            --secondary: #35495e;
+            --accent: #ff7e67;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --shadow: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Roboto', 'Minecraft', sans-serif;
+            background: linear-gradient(135deg, #1a2a3a 0%, #0d1b2a 100%);
+            background-image: url('https://i.imgur.com/SLv7F3y.png');
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            text-shadow: 3px 3px 0px var(--dark), 5px 5px 0px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            font-size: 3em;
+            font-family: 'Minecraft', sans-serif;
+            letter-spacing: 2px;
+            transform: perspective(500px) rotateX(10deg);
+            animation: titleGlow 3s infinite alternate;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 3px 3px 0px var(--dark), 0 0 15px rgba(255, 126, 103, 0.3);
+            }
+            100% {
+                text-shadow: 3px 3px 0px var(--dark), 0 0 30px rgba(255, 126, 103, 0.7);
+            }
+        }
+
+        .classifica {
+            background-color: rgba(53, 73, 94, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.3s ease;
+        }
+
+        .classifica:hover {
+            transform: translateY(-5px);
+        }
+
+        .player {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to right, rgba(66, 184, 131, 0.1), rgba(53, 73, 94, 0.3));
+            border-left: 5px solid var(--primary);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: slideIn 0.5s forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .player:nth-child(1) {
+            border-left-color: gold;
+            background: linear-gradient(to right, rgba(255, 215, 0, 0.2), rgba(53, 73, 94, 0.3));
+            animation-delay: 0.1s;
+        }
+
+        .player:nth-child(2) {
+            border-left-color: silver;
+            background: linear-gradient(to right, rgba(192, 192, 192, 0.2), rgba(53, 73, 94, 0.3));
+            animation-delay: 0.2s;
+        }
+
+        .player:nth-child(3) {
+            border-left-color: #cd7f32;
+            background: linear-gradient(to right, rgba(205, 127, 50, 0.2), rgba(53, 73, 94, 0.3));
+            animation-delay: 0.3s;
+        }
+
+        .player:nth-child(4), .player:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .player:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .player::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            pointer-events: none;
+        }
+
+        .rank {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-right: 20px;
+            color: var(--accent);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 126, 103, 0.3);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .player-name {
+            flex-grow: 1;
+            font-size: 1.3em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .player:hover .player-name {
+            transform: translateX(5px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: 'Minecraft', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            transition: all 0.3s;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-up {
+            background-color: var(--primary);
+        }
+
+        .btn-up:hover {
+            background-color: #4ecb91;
+        }
+
+        .btn-down {
+            background-color: var(--accent);
+        }
+
+        .btn-down:hover {
+            background-color: #ff9780;
+        }
+
+        .btn-remove {
+            background-color: #e74c3c;
+        }
+
+        .btn-remove:hover {
+            background-color: #ff6b6b;
+        }
+
+        .add-player {
+            background-color: rgba(53, 73, 94, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 1s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .add-player:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .add-player h2 {
+            margin-top: 0;
+            color: var(--accent);
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+            font-family: 'Minecraft', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+
+        .add-player h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 3px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            background-color: rgba(236, 240, 241, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(236, 240, 241, 0.15);
+            box-shadow: 0 0 0 3px rgba(66, 184, 131, 0.3);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-add {
+            background-color: var(--primary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .btn-add:hover {
+            background-color: #4ecb91;
+        }
+
+        .data-controls .btn {
+            background-color: var(--secondary);
+            padding: 10px 15px;
+            transition: all 0.3s;
+        }
+
+        .data-controls .btn:hover {
+            background-color: #4a6785;
+        }
+
+        .empty-slot {
+            background-color: rgba(236, 240, 241, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .empty-slot:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(236, 240, 241, 0.08);
+        }
+
+        /* Effetti particellari */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .player {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .rank {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <h1>Classifica Ufficiale Falsa</h1>
+
+        <div class="classifica" id="classifica">
+            <!-- I posti della classifica verranno generati dinamicamente -->
+        </div>
+
+        <div class="add-player">
+            <h2>Aggiungi Giocatore</h2>
+            <div class="input-group">
+                <input type="text" id="new-player-name" placeholder="Nome del giocatore">
+                <button class="btn btn-add" onclick="addPlayer()">Aggiungi</button>
+            </div>
+
+            <div class="data-controls" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <div id="download-data" style="display: none;">
+                    <button class="btn" onclick="downloadDataFile()" style="width: 100%;">Scarica data.json</button>
+                </div>
+
+                <div class="file-upload">
+                    <label for="upload-file" class="btn" style="display: block; text-align: center; cursor: pointer;">
+                        Carica data.json
+                    </label>
+                    <input type="file" id="upload-file" accept=".json" style="display: none;" onchange="uploadDataFile(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array per memorizzare i giocatori
+        let players = [];
+
+        // Funzione per inizializzare la classifica
+        function initClassifica() {
+            const classifica = document.getElementById('classifica');
+            classifica.innerHTML = '';
+
+            // Crea 5 slot per la classifica
+            for (let i = 0; i < 5; i++) {
+                if (i < players.length) {
+                    // Slot con giocatore
+                    const player = players[i];
+                    const playerElement = document.createElement('div');
+                    playerElement.className = 'player';
+                    playerElement.style.animationDelay = `${i * 0.1}s`;
+
+                    // Aggiungi classe speciale per i primi 3 posti
+                    if (i < 3) {
+                        playerElement.classList.add(`rank-${i+1}`);
+                    }
+
+                    playerElement.innerHTML = `
+                        <div class="rank">${i + 1}</div>
+                        <div class="player-name">${player}</div>
+                        <div class="controls">
+                            <button class="btn btn-up" onclick="movePlayer(${i}, -1)" ${i === 0 ? 'disabled' : ''}>
+                                <span>↑</span>
+                            </button>
+                            <button class="btn btn-down" onclick="movePlayer(${i}, 1)" ${i === players.length - 1 ? 'disabled' : ''}>
+                                <span>↓</span>
+                            </button>
+                            <button class="btn btn-remove" onclick="removePlayer(${i})">
+                                <span>✖</span>
+                            </button>
+                        </div>
+                    `;
+                    classifica.appendChild(playerElement);
+                } else {
+                    // Slot vuoto
+                    const emptySlot = document.createElement('div');
+                    emptySlot.className = 'empty-slot';
+                    emptySlot.style.animationDelay = `${i * 0.1}s`;
+                    emptySlot.textContent = `Posto #${i + 1} - Vuoto`;
+                    classifica.appendChild(emptySlot);
+                }
+            }
+
+            // Salva i giocatori nel file data.json
+            savePlayersToFile();
+        }
+
+        // Funzione per salvare i giocatori nel file
+        function savePlayersToFile() {
+            const data = {
+                players: players
+            };
+
+            // Prova a salvare usando fetch e PHP
+            fetch('saveData.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Errore nel salvataggio dei dati');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Dati salvati con successo:', data);
+            })
+            .catch(error => {
+                console.error('Errore nel salvataggio su file, uso localStorage come fallback:', error);
+                // Fallback: salva nel localStorage
+                localStorage.setItem('minecraftPlayers', JSON.stringify(players));
+                console.log('Dati salvati nel localStorage');
+            });
+
+            // Opzione per il download manuale del file data.json
+            document.getElementById('download-data').style.display = 'block';
+        }
+
+        // Funzione per scaricare il file data.json
+        function downloadDataFile() {
+            const data = {
+                players: players
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Funzione per aggiungere un giocatore
+        function addPlayer() {
+            const nameInput = document.getElementById('new-player-name');
+            const name = nameInput.value.trim();
+
+            if (name === '') {
+                showNotification('Inserisci un nome valido!', 'error');
+                nameInput.focus();
+                return;
+            }
+
+            if (players.includes(name)) {
+                showNotification('Questo giocatore è già nella classifica!', 'error');
+                nameInput.focus();
+                return;
+            }
+
+            if (players.length >= 5) {
+                showNotification('La classifica è piena! Rimuovi un giocatore prima di aggiungerne un altro.', 'error');
+                return;
+            }
+
+            players.push(name);
+            nameInput.value = '';
+
+            // Animazione di aggiunta
+            showNotification(`${name} è stato aggiunto alla classifica!`, 'success');
+
+            initClassifica();
+        }
+
+        // Funzione per spostare un giocatore su o giù
+        function movePlayer(index, direction) {
+            // Direzione: -1 per su, 1 per giù
+            const newIndex = index + direction;
+
+            // Controlla che il nuovo indice sia valido
+            if (newIndex < 0 || newIndex >= players.length) {
+                return;
+            }
+
+            // Scambia i giocatori
+            const temp = players[index];
+            players[index] = players[newIndex];
+            players[newIndex] = temp;
+
+            // Aggiorna la classifica con animazione
+            const playerElements = document.querySelectorAll('.player');
+
+            // Aggiungi classe per animazione
+            playerElements[index].classList.add('moving');
+            playerElements[newIndex].classList.add('moving');
+
+            // Aggiorna la classifica dopo un breve ritardo per l'animazione
+            setTimeout(() => {
+                initClassifica();
+            }, 300);
+        }
+
+        // Funzione per rimuovere un giocatore
+        function removePlayer(index) {
+            // Ottieni il nome del giocatore da rimuovere
+            const playerName = players[index];
+
+            // Rimuovi il giocatore dall'array
+            players.splice(index, 1);
+
+            // Mostra notifica
+            showNotification(`${playerName} è stato rimosso dalla classifica!`, 'info');
+
+            // Aggiorna la classifica
+            initClassifica();
+        }
+
+        // Funzione per mostrare notifiche
+        function showNotification(message, type = 'info') {
+            // Crea elemento notifica
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+
+            // Aggiungi al body
+            document.body.appendChild(notification);
+
+            // Animazione di entrata
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
+            // Rimuovi dopo 3 secondi
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Funzione per creare particelle
+        function createParticles() {
+            const particles = document.getElementById('particles');
+
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // Posizione casuale
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+
+                // Dimensione casuale
+                const size = Math.random() * 5 + 2;
+
+                // Velocità casuale
+                const duration = Math.random() * 20 + 10;
+
+                // Stile
+                particle.style.cssText = `
+                    position: absolute;
+                    top: ${y}%;
+                    left: ${x}%;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background-color: rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1});
+                    border-radius: 50%;
+                    pointer-events: none;
+                    animation: float ${duration}s infinite linear;
+                    animation-delay: -${Math.random() * 10}s;
+                `;
+
+                particles.appendChild(particle);
+            }
+        }
+
+        // Carica i giocatori dal file data.json
+        function loadPlayers() {
+            // Usa fetch per caricare i dati
+            fetch('data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Errore nel caricamento dei dati');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.players) {
+                    players = data.players;
+                    initClassifica();
+                    console.log('Dati caricati con successo:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Errore nel caricamento da file, provo localStorage:', error);
+
+                // Fallback: carica dal localStorage
+                const savedPlayers = localStorage.getItem('minecraftPlayers');
+                if (savedPlayers) {
+                    players = JSON.parse(savedPlayers);
+                    initClassifica();
+                    console.log('Dati caricati dal localStorage');
+                } else {
+                    // Se non ci sono dati, inizializza comunque la classifica vuota
+                    initClassifica();
+                    console.log('Nessun dato trovato, classifica inizializzata vuota');
+                }
+            });
+        }
+
+        // Funzione per caricare un file data.json manualmente
+        function uploadDataFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data && data.players) {
+                        players = data.players;
+                        initClassifica();
+                        showNotification('Dati caricati con successo dal file', 'success');
+                    } else {
+                        throw new Error('Formato file non valido');
+                    }
+                } catch (error) {
+                    console.error('Errore nel parsing del file:', error);
+                    showNotification('Errore nel caricamento del file', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Gestione input con tasto Invio
+        document.getElementById('new-player-name').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+
+        // Inizializza la classifica all'avvio
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlayers();
+            // initClassifica() viene chiamato dopo il caricamento dei dati
+            createParticles();
+
+            // Aggiungi stile per le animazioni delle particelle
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes float {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                    }
+                    50% {
+                        transform: translateY(-20vh) rotate(180deg);
+                    }
+                    100% {
+                        transform: translateY(-40vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+
+                .notification {
+                    position: fixed;
+                    bottom: -100px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    background-color: var(--secondary);
+                    color: white;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                    z-index: 1000;
+                    transition: bottom 0.3s ease;
+                    font-family: 'Minecraft', sans-serif;
+                }
+
+                .notification.show {
+                    bottom: 20px;
+                }
+
+                .notification.success {
+                    background-color: var(--primary);
+                }
+
+                .notification.error {
+                    background-color: var(--accent);
+                }
+
+                .player.moving {
+                    animation: shake 0.3s ease;
+                }
+
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

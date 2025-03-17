@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="it">
+<head> <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecniche Bedwars</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Tecniche Bedwars</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="mie-tecniche.html">Le mie tecniche</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="tecnica" id="tecnica1">
+            <h2>Tecnica 1: Rush veloce</h2>
+            <p>Spiegazione della tecnica...</p>
+            <button class="v-btn" onclick="segnaImparata('tecnica1')">V</button>
+        </div>
+
+        <div class="tecnica" id="tecnica2">
+            <h2>Tecnica 2: Difesa avanzata</h2>
+            <p>Spiegazione della tecnica...</p>
+            <button class="v-btn" onclick="segnaImparata('tecnica2')">V</button>
+        </div>
+
+        <!-- Aggiungi altre tecniche qui -->
+    </main>
+
+    <script>
+        // Funzione per segnare una tecnica come imparata
+        function segnaImparata(id) {
+            const tecnica = document.getElementById(id);
+            const btn = tecnica.querySelector('.v-btn');
+            btn.classList.toggle('imparata');
+            btn.textContent = btn.classList.contains('imparata') ? '✔' : 'V';
+
+            // Salva lo stato nel localStorage
+            localStorage.setItem(id, btn.classList.contains('imparata'));
+
+            // Controlla se tutte le tecniche sono state imparate
+            controllaCompletamento();
+        }
+
+        // Funzione per controllare il completamento
+        function controllaCompletamento() {
+            const tutteTecniche = document.querySelectorAll('.tecnica');
+            let completate = true;
+            tutteTecniche.forEach(tecnica => {
+                const btn = tecnica.querySelector('.v-btn');
+                if (!btn.classList.contains('imparata')) {
+                    completate = false;
+                }
+            });
+
+            if (completate) {
+                alert('Hai imparato tutte le tecniche!');
+                // Nascondi le tecniche dalla dashboard
+                tutteTecniche.forEach(tecnica => {
+                    tecnica.style.display = 'none';
+                });
+            }
+        }
+
+        // Ripristina lo stato delle tecniche al caricamento della pagina
+        window.onload = () => {
+            const tutteTecniche = document.querySelectorAll('.tecnica');
+            tutteTecniche.forEach(tecnica => {
+                const id = tecnica.id;
+                const imparata = localStorage.getItem(id) === 'true';
+                if (imparata) {
+                    const btn = tecnica.querySelector('.v-btn');
+                    btn.classList.add('imparata');
+                    btn.textContent = '✔';
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le mie tecniche</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Le mie tecniche</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="mie-tecniche.html">Le mie tecniche</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="mie-tecniche-lista">
+            <!-- Le tecniche selezionate appariranno qui -->
+        </div>
+    </main>
+
+    <script>
+        // Mostra le tecniche segnate come imparate
+        window.onload = () => {
+            const listaTecniche = document.getElementById('mie-tecniche-lista');
+            const tutteTecniche = ['tecnica1', 'tecnica2']; // Aggiungi tutti gli ID delle tecniche
+
+            tutteTecniche.forEach(id => {
+                if (localStorage.getItem(id) === 'true') {
+                    const tecnica = document.createElement('div');
+                    tecnica.className = 'tecnica';
+                    tecnica.innerHTML = `
+                        <h2>${document.getElementById(id).querySelector('h2').textContent}</h2>
+                        <p>${document.getElementById(id).querySelector('p').textContent}</p>
+                    `;
+                    listaTecniche.appendChild(tecnica);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 0.5rem;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+main {
+    padding: 20px;
+}
+
+.tecnica {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.v-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.v-btn.imparata {
+    background-color: #28a745;
+}
+
+.v-btn.imparata::after {
+    content: '✔';
+}
+
+#mie-tecniche-lista .tecnica {
+    background-color: #e9ecef;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le mie tecniche</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Le mie tecniche</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="mie-tecniche.html">Le mie tecniche</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="mie-tecniche-lista">
+            <!-- Le tecniche selezionate appariranno qui -->
+        </div>
+    </main>
+
+    <script>
+        // Mostra le tecniche segnate come imparate
+        window.onload = () => {
+            const listaTecniche = document.getElementById('mie-tecniche-lista');
+            const tutteTecniche = ['tecnica1', 'tecnica2']; // Aggiungi tutti gli ID delle tecniche
+
+            tutteTecniche.forEach(id => {
+                if (localStorage.getItem(id) === 'true') {
+                    const tecnica = document.createElement('div');
+                    tecnica.className = 'tecnica';
+                    tecnica.innerHTML = `
+                        <h2>${document.getElementById(id).querySelector('h2').textContent}</h2>
+                        <p>${document.getElementById(id).querySelector('p').textContent}</p>
+                    `;
+                    listaTecniche.appendChild(tecnica);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
