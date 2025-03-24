@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Famiglia - Reindirizzamento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4a6fa5;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        a {
+            display: inline-block;
+            background-color: #4a6fa5;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        a:hover {
+            background-color: #6b8cbe;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard Famiglia</h1>
+        <div class="loader"></div>
+        <p>Stai per essere reindirizzato alla pagina di login...</p>
+        <p>Se il reindirizzamento non avviene automaticamente, clicca sul pulsante qui sotto.</p>
+        <a href="index.html">Vai alla pagina di login</a>
+    </div>
+
+    <script>
+        // Reindirizza alla pagina di login dopo 2 secondi
+        setTimeout(function() {
+            window.location.href = "index.html";
+        }, 2000);
+    </script>
+</body>
+</html>

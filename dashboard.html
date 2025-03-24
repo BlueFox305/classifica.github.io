@@ -1,0 +1,2999 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Famiglia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbe;
+            --accent-color: #ff9a3c;
+            --text-color: #333;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-color: #e0e0e0;
+        }
+
+        body.dark-mode {
+            --primary-color: #3a5a8c;
+            --secondary-color: #5a7aad;
+            --accent-color: #ff8c2a;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a2e;
+            --card-bg: #2a2a42;
+            --sidebar-bg: #252542;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --border-color: #3a3a5a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(74, 111, 165, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 154, 60, 0.05) 0%, transparent 20%);
+            animation: backgroundShift 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes backgroundShift {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            position: fixed;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .menu {
+            flex: 1;
+            padding: 1rem 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 0px solid var(--accent-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(74, 111, 165, 0.1);
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover::after {
+            transform: translateX(0);
+        }
+
+        .menu-item i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover i {
+            transform: scale(1.2);
+        }
+
+        .menu-item.active i {
+            transform: scale(1.2);
+            color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-footer button {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .theme-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .theme-btn:hover {
+            background-color: var(--bg-color);
+            transform: translateY(-2px);
+        }
+
+        .data-btn {
+            background-color: var(--primary-color);
+            color: white;
+            opacity: 0.9;
+        }
+
+        .data-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .upload-btn {
+            background-color: var(--accent-color);
+            color: white;
+            opacity: 0.9;
+        }
+
+        .upload-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .sidebar-footer button i {
+            margin-right: 0.5rem;
+        }
+
+        /* Stile per il file input nascosto */
+        .file-input {
+            display: none;
+        }
+
+        /* Stile per il modal di caricamento */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .modal-message {
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .modal-confirm {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-cancel {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .page-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(74, 111, 165, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+        }
+
+        .family-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .member-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-card.expanded .member-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .member-details {
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .member-card.expanded .member-details {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
+
+        .member-info {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .member-card.expanded .member-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .member-card.expanded .member-info:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+
+        .member-card.expanded .member-info:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .expand-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .member-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .member-card:hover .member-avatar {
+            animation: pulse 1s infinite;
+        }
+
+        .events-list, .announcements-list {
+            display: none;
+        }
+
+        .event-item, .announcement-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.5s forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .event-item:nth-child(1), .announcement-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .event-item:nth-child(2), .announcement-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .event-item:nth-child(3), .announcement-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .event-item:hover, .announcement-item:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-item::before, .announcement-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-color);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.3s ease;
+        }
+
+        .event-item:hover::before, .announcement-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .event-date, .announcement-date {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            position: relative;
+        }
+
+        .event-date::after, .announcement-date::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .event-item:hover .event-date::after,
+        .announcement-item:hover .announcement-date::after {
+            transform: scaleX(1);
+        }
+
+        .event-title, .announcement-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            transition: color 0.3s ease;
+        }
+
+        .event-item:hover .event-title,
+        .announcement-item:hover .announcement-title {
+            color: var(--accent-color);
+        }
+
+        .event-description, .announcement-content {
+            color: var(--text-color);
+            line-height: 1.5;
+            position: relative;
+            padding-left: 0;
+            transition: padding-left 0.3s ease;
+        }
+
+        .event-item:hover .event-description,
+        .announcement-item:hover .announcement-content {
+            padding-left: 10px;
+        }
+
+        /* Stili per i pulsanti di aggiunta e rimozione */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-btn, .edit-btn, .delete-btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 0.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .add-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .edit-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #e88c2a;
+            transform: translateY(-3px);
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+        }
+
+        .action-buttons i {
+            margin-right: 0.5rem;
+        }
+
+        .admin-controls {
+            display: none; /* Nascosto di default, mostrato solo per l'amministratore */
+        }
+
+        .item-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .item-actions button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Stili per il form di aggiunta/modifica */
+        .form-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Stili per i pulsanti di aggiunta e rimozione */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-btn, .edit-btn, .delete-btn {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 0.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .add-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .edit-btn {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #e88c2a;
+            transform: translateY(-3px);
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+        }
+
+        .action-buttons i {
+            margin-right: 0.5rem;
+        }
+
+        .admin-controls {
+            display: none; /* Nascosto di default, mostrato solo per l'amministratore */
+        }
+
+        .item-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .item-actions button {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Stili per il form di aggiunta/modifica */
+        .form-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+                padding-top: 4rem;
+            }
+
+            .menu-toggle {
+                display: none;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 101;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 5px;
+                padding: 0.8rem;
+                cursor: pointer;
+                box-shadow: var(--shadow);
+                transition: all 0.3s ease;
+            }
+
+            .menu-toggle:hover {
+                background-color: var(--secondary-color);
+            }
+
+            .menu-toggle.active {
+                left: 240px;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .family-members {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .member-card {
+                padding: 1.2rem;
+            }
+
+            .event-item, .announcement-item {
+                padding: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .family-members {
+                grid-template-columns: 1fr;
+            }
+
+            .member-card {
+                max-width: 100%;
+            }
+
+            .sidebar {
+                width: 85%;
+            }
+
+            .menu-toggle.active {
+                left: calc(85% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-home"></i>
+                <div>Dashboard Famiglia</div>
+            </div>
+            <div class="user-info">
+                Benvenuto, <span class="user-name" id="userName">Utente</span>
+            </div>
+        </div>
+        
+        <div class="menu">
+            <div class="menu-item active" data-page="membri">
+                <i class="fas fa-users"></i>
+                <span>Membri Famiglia</span>
+            </div>
+            <div class="menu-item" data-page="eventi">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Eventi</span>
+            </div>
+            <div class="menu-item" data-page="annunci">
+                <i class="fas fa-bullhorn"></i>
+                <span>Annunci</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <button class="data-btn" id="downloadBtn">
+                <i class="fas fa-download"></i>
+                <span>Scarica dati</span>
+            </button>
+            <button class="upload-btn" id="uploadBtn">
+                <i class="fas fa-upload"></i>
+                <span>Carica dati</span>
+            </button>
+            <input type="file" id="fileInput" class="file-input" accept=".json">
+            <button class="theme-btn" id="themeToggle">
+                <i class="fas fa-moon"></i>
+                <span>Modalità scura</span>
+            </button>
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Esci</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="action-buttons admin-controls" id="eventiControls">
+                <button class="add-btn" id="addEventBtn">
+                    <i class="fas fa-plus"></i>
+                    Aggiungi evento
+                </button>
+            </div>
+
+            <div id="eventiContainer">
+                <!-- Gli eventi verranno caricati dinamicamente qui -->
+            </div>
+        </div>
+
+        <!-- Sezione Annunci -->
+        <div class="content-section announcements-list" id="annunciContent">
+            <div class="action-buttons admin-controls" id="annunciControls">
+                <button class="add-btn" id="addAnnouncementBtn">
+                    <i class="fas fa-plus"></i>
+                    Aggiungi annuncio
+                </button>
+            </div>
+
+            <div id="annunciContainer">
+                <!-- Gli annunci verranno caricati dinamicamente qui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per il caricamento dei dati -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-title">Carica dati</div>
+            <div class="modal-message">
+                Stai per caricare nuovi dati. Questa operazione sovrascriverà i dati esistenti. Vuoi continuare?
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmUpload">Conferma</button>
+                <button class="modal-btn modal-cancel" id="cancelUpload">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per l'aggiunta/modifica di eventi -->
+    <div class="form-modal" id="eventFormModal">
+        <div class="form-content">
+            <div class="form-title" id="eventFormTitle">Aggiungi evento</div>
+            <form id="eventForm">
+                <input type="hidden" id="eventIndex" value="-1">
+                <div class="form-group">
+                    <label for="eventData">Data</label>
+                    <input type="text" id="eventData" required placeholder="es. 25 Dicembre 2023">
+                </div>
+                <div class="form-group">
+                    <label for="eventTitolo">Titolo</label>
+                    <input type="text" id="eventTitolo" required placeholder="Titolo dell'evento">
+                </div>
+                <div class="form-group">
+                    <label for="eventDescrizione">Descrizione</label>
+                    <textarea id="eventDescrizione" required placeholder="Descrizione dettagliata dell'evento"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="modal-btn modal-cancel" id="cancelEventForm">Annulla</button>
+                    <button type="submit" class="modal-btn modal-confirm">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal per l'aggiunta/modifica di annunci -->
+    <div class="form-modal" id="announcementFormModal">
+        <div class="form-content">
+            <div class="form-title" id="announcementFormTitle">Aggiungi annuncio</div>
+            <form id="announcementForm">
+                <input type="hidden" id="announcementIndex" value="-1">
+                <div class="form-group">
+                    <label for="announcementData">Data</label>
+                    <input type="text" id="announcementData" required placeholder="es. 10 Novembre 2023">
+       ,
+            permessi: {
+                admin: ["Lorenzo"] // Solo Lorenzo ha i permessi di amministratore
+            }         </div>
+                <div class="form-group">
+                    <label for="announcementTitolo">Titolo</label>
+                    <input type="text" id="announcementTitolo" required placeholder="Titolo dell'annuncio">
+                </div>
+                <div class="form-group">
+                    <label for="announcementContenuto">Contenuto</label>
+                    <textarea id="announcementContenuto" required placeholder="Contenuto dell'annuncio"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="modal-btn modal-cancel" id="cancelAnnouncementForm">Annulla</button>
+                    <button type="submit" class="modal-btn modal-confirm">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal di conferma eliminazione -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <div class="modal-title">Conferma eliminazione</div>
+            <div class="modal-message" id="deleteConfirmMessage">
+                Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata.
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmDelete">Elimina</button>
+                <button class="modal-btn modal-cancel" id="cancelDeletemain-content">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <h1 class="page-title" id="pageTitle">Membri della Famiglia</h1>
+
+        <!-- Sezione Membri Famiglia -->
+        <div class="content-section family-members" id="membriContent">
+            <!-- I membri della famiglia verranno inseriti qui dinamicamente -->
+        </div>
+
+        <!-- Sezione Eventi -->
+        <div class="content-section events-list" id="eventiContent">
+            <div class="action-buttons admin-controls" id="eventiControls">
+                <button class="add-btn" id="addEventBtn">
+            
+
+            // Gestione degli eventi
+            document.getElementById('addEventBtn').addEventListener('click', function() {
+                openEventForm();
+            });
+
+            document.getElementById('cancelEventForm').addEventListener('click', function() {
+                document.getElementById('eventFormModal').style.display = 'none';
+            });
+
+            document.getElementById('eventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEvent();
+            });
+
+            // Gestione degli annunci
+            document.getElementById('addAnnouncementBtn').addEventListener('click', function() {
+                openAnnouncementForm();
+            });
+
+            document.getElementById('cancelAnnouncementForm').addEventListener('click', function() {
+                document.getElementById('announcementFormModal').style.display = 'none';
+            });
+
+            document.getElementById('announcementForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveAnnouncement();
+            });
+
+            // Gestione della conferma di eliminazione
+            document.getElementById('cancelDelete').addEventListener('click', function() {
+                document.getElementById('deleteConfirmModal').style.display = 'none';
+            });
+        <i class="fas fa-plus"></i>
+                    Aggiungi evento
+                </button>
+            </div>
+
+            <div id="eventiContainer">
+                <!-- Gli eventi verranno caricati dinamicamente qui -->
+            </div>
+        </div>
+
+        <!-- Sezione Annunci -->
+        <div class="content-section announcements-list" id="annunciContent">
+            <div class="action-buttons admin-controls" id="annunciControls">
+                <button class="add-btn" id="addAnnouncementBtn">
+                    <i class="fas fa-plus"></i>
+                    Aggiungi annuncio
+                </button>
+            </div>
+
+            <div id="annunciContainer">
+                <!-- Gli annunci verranno caricati dinamicamente qui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per il caricamento dei dati -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-title">Carica dati</div>
+            <div class="modal-message">
+                Stai per caricare nuovi dati. Questa operazione sovrascriverà i dati esistenti. Vuoi continuare?
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmUpload">Conferma</button>
+                <button class="modal-btn modal-cancel" id="cancelUpload">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per l'aggiunta/modifica di eventi -->
+    <div class="form-modal" id="eventFormModal">
+        <div class="form-content">
+            <div class="form-title" id="eventFormTitle">Aggiungi evento</div>
+            <form id="eventForm">
+                <input type="hidden" id="eventIndex" value="-1">
+                <div class="form-group">
+                    <label for="eventData">Data</label>
+                    <input type="text" id="eventData" required placeholder="es. 25 Dicembre 2023">
+                </div>
+                <div class="form-group">
+                    <label for="eventTitolo">Titolo</label>
+                    <input type="text" id="eventTitolo" required placeholder="Titolo dell'evento">
+                </div>
+                <div class="form-group">
+                    <label for="eventDescrizione">Descrizione</label>
+                    <textarea id="eventDescrizione" required placeholder="Descrizione dettagliata dell'evento"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="modal-btn modal-cancel" id="cancelEventForm">Annulla</button>
+                    <button type="submit" class="modal-btn modal-confirm">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal per l'aggiunta/modifica di annunci -->
+    <div class="form-modal" id="announcementFormModal">
+        <div class="form-content">
+            <div class="form-title" id="announcementFormTitle">Aggiungi annuncio</div>
+            <form id="announcementForm">
+                <input type="hidden" id="announcementIndex" value="-1">
+                <div class="form-group">
+                    <label for="announcementData">Data</label>
+                    <input type="text" id="announcementData" required placeholder="es. 10 Novembre 2023">
+                </div>
+                <div class="form-group">
+                    <label for="announcementTitolo">Titolo</label>
+                    <input type="text" id="announcementTitolo" required placeholder="Titolo dell'annuncio">
+                </div>
+                <div class="form-group">
+                    <label for="announcementContenuto">Contenuto</label>
+                    <textarea id="announcementContenuto" required placeholder="Contenuto dell'annuncio"></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="modal-btn modal-cancel" id="cancelAnnouncementForm">Annulla</button>
+                    <button type="submit" class="modal-btn modal-confirm">Salva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal di conferma eliminazione -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content">
+            <div class="modal-title">Conferma eliminazione</div>
+            <div class="modal-message" id="deleteConfirmMessage">
+                Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata.
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirmDelete">Elimina</button>
+                <button class="modal-btn modal-cancel" id="cancelDelete">Annulla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dati dell'applicazione
+        let appData = {
+            membri: [],
+            eventi: [
+                { data: "25 Dicembre 2023", titolo: "Natale in Famiglia", descrizione: "Celebrazione del Natale con pranzo alle ore 13:00. Ogni membro della famiglia è invitato a portare un piccolo regalo per lo scambio." },
+                { data: "31 Dicembre 2023", titolo: "Capodanno", descrizione: "Festa di Capodanno a casa. Cena alle 20:00 seguita da giochi e festeggiamenti fino a mezzanotte." },
+                { data: "15 Marzo 2024", titolo: "Compleanno di Lorenzo", descrizione: "Festa di compleanno per i 12 anni di Lorenzo. Torta e regali nel pomeriggio." }
+            ],
+            annunci: [
+                { data: "10 Novembre 2023", titolo: "Riunione Familiare", contenuto: "Domenica prossima alle 18:00 ci sarà una riunione familiare per discutere dei prossimi eventi e delle vacanze estive." },
+                { data: "5 Novembre 2023", titolo: "Nuovo Sistema di Gestione Familiare", contenuto: "Abbiamo lanciato il nuovo sistema di dashboard familiare! Ora possiamo tenere traccia di eventi, compleanni e comunicazioni importanti in un unico posto." }
+            ],
+            permessi: {
+                admin: ["Lorenzo"] // Solo Lorenzo ha i permessi di amministratore
+            }
+        };
+
+        // Controlla se l'utente è loggato
+        document.addEventListener('DOMContentLoaded', function() {
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+
+            if (!utenteCorrente) {
+                // Reindirizza alla pagina di login se l'utente non è loggato
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Mostra il nome dell'utente
+            document.getElementById('userName').textContent = utenteCorrente.nome;
+
+            // Carica i dati dei membri della famiglia
+            appData.membri = membriFamiglia;
+            loadFamilyMembers();
+
+            // Carica eventi e annunci
+            loadEvents();
+            loadAnnouncements();
+
+            // Controlla i permessi dell'utente
+            checkUserPermissions(utenteCorrente.nome);
+
+                            // Mantieni i permessi originali
+                            uploadedData.permessi = appData.permessi;
+
+            // Gestione del menu
+            setupMenu();
+
+            // Gestione del tema
+            setupTheme();
+
+            // Gestione del menu mobile
+            setupMobileMenu();
+                            loadEvents();
+                            loadAnnouncements();
+
+            // Gestione del logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                sessionStorage.removeItem('utenteCorrente');
+                window.location.href = 'index.html';
+            });
+
+            // Gestione del download dei dati
+            document.getElementById('downloadBtn').addEventListener('click', downloadData);
+
+            // Gestione dell'upload dei dati
+            document.getElementById('uploadBtn').addEventListener('click', function() {
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    document.getElementById('uploadModal').style.display = 'flex';
+                }
+
+        // Funzione per controllare i permessi dell'utente
+        function checkUserPermissions(nome) {
+            const isAdmin = appData.permessi.admin.includes(nome);
+
+            // Mostra/nascondi i controlli di amministrazione
+            const adminControls = document.querySelectorAll('.admin-controls');
+            adminControls.forEach(control => {
+                control.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            return isAdmin;
+        }
+
+        // Funzione per caricare gli eventi
+        function loadEvents() {
+            const eventiContainer = document.getElementById('eventiContainer');
+            eventiContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.eventi.forEach((evento, index) => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+
+                let itemHTML = `
+                    <div class="event-date">${evento.data}</div>
+                    <div class="event-title">${evento.titolo}</div>
+                    <div class="event-description">${evento.descrizione}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editEvent(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteEvent(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                eventItem.innerHTML = itemHTML;
+                eventiContainer.appendChild(eventItem);
+            });
+        }
+
+        // Funzione per caricare gli annunci
+        function loadAnnouncements() {
+            const annunciContainer = document.getElementById('annunciContainer');
+            annunciContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.annunci.forEach((annuncio, index) => {
+                const announcementItem = document.createElement('div');
+                announcementItem.className = 'announcement-item';
+
+                let itemHTML = `
+                    <div class="announcement-date">${annuncio.data}</div>
+                    <div class="announcement-title">${annuncio.titolo}</div>
+                    <div class="announcement-content">${annuncio.contenuto}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editAnnouncement(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteAnnouncement(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                announcementItem.innerHTML = itemHTML;
+                annunciContainer.appendChild(announcementItem);
+            });
+        }
+
+        // Funzione per aprire il form degli eventi (aggiunta)
+        function openEventForm() {
+            document.getElementById('eventFormTitle').textContent = 'Aggiungi evento';
+            document.getElementById('eventIndex').value = -1;
+            document.getElementById('eventData').value = '';
+            document.getElementById('eventTitolo').value = '';
+            document.getElementById('eventDescrizione').value = '';
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un evento
+        function editEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('eventFormTitle').textContent = 'Modifica evento';
+            document.getElementById('eventIndex').value = index;
+            document.getElementById('eventData').value = evento.data;
+            document.getElementById('eventTitolo').value = evento.titolo;
+            document.getElementById('eventDescrizione').value = evento.descrizione;
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un evento
+        function saveEvent() {
+            const index = parseInt(document.getElementById('eventIndex').value);
+            const data = document.getElementById('eventData').value.trim();
+            const titolo = document.getElementById('eventTitolo').value.trim();
+            const descrizione = document.getElementById('eventDescrizione').value.trim();
+
+            const evento = {
+                data: data,
+                titolo: titolo,
+                descrizione: descrizione
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo evento
+                appData.eventi.push(evento);
+            } else {
+                // Modifica evento esistente
+                appData.eventi[index] = evento;
+            }
+
+            // Ricarica gli eventi
+            loadEvents();
+
+            // Chiudi il modal
+            document.getElementById('eventFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un evento
+        function confirmDeleteEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'evento "${evento.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteEvent(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un evento
+        function deleteEvent(index) {
+            appData.eventi.splice(index, 1);
+            loadEvents();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        // Funzione per aprire il form degli annunci (aggiunta)
+        function openAnnouncementForm() {
+            document.getElementById('announcementFormTitle').textContent = 'Aggiungi annuncio';
+            document.getElementById('announcementIndex').value = -1;
+            document.getElementById('announcementData').value = '';
+            document.getElementById('announcementTitolo').value = '';
+            document.getElementById('announcementContenuto').value = '';
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un annuncio
+        function editAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('announcementFormTitle').textContent = 'Modifica annuncio';
+            document.getElementById('announcementIndex').value = index;
+            document.getElementById('announcementData').value = annuncio.data;
+            document.getElementById('announcementTitolo').value = annuncio.titolo;
+            document.getElementById('announcementContenuto').value = annuncio.contenuto;
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un annuncio
+        function saveAnnouncement() {
+            const index = parseInt(document.getElementById('announcementIndex').value);
+            const data = document.getElementById('announcementData').value.trim();
+            const titolo = document.getElementById('announcementTitolo').value.trim();
+            const contenuto = document.getElementById('announcementContenuto').value.trim();
+
+            const annuncio = {
+                data: data,
+                titolo: titolo,
+                contenuto: contenuto
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo annuncio
+                appData.annunci.push(annuncio);
+            } else {
+                // Modifica annuncio esistente
+                appData.annunci[index] = annuncio;
+            }
+
+            // Ricarica gli annunci
+            loadAnnouncements();
+
+            // Chiudi il modal
+            document.getElementById('announcementFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un annuncio
+        function confirmDeleteAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'annuncio "${annuncio.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteAnnouncement(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un annuncio
+        function deleteAnnouncement(index) {
+            appData.annunci.splice(index, 1);
+            loadAnnouncements();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+            });
+
+            document.getElementById('confirmUpload').addEventListener('click', uploadData);
+
+            document.getElementById('cancelUpload').addEventListener('click', function() {
+                document.getElementById('uploadModal').style.display = 'none';
+                document.getElementById('fileInput').value = '';
+            });
+
+            // Gestione degli eventi
+            document.getElementById('addEventBtn').addEventListener('click', function() {
+                openEventForm();
+            });
+
+            document.getElementById('cancelEventForm').addEventListener('click', function() {
+                document.getElementById('eventFormModal').style.display = 'none';
+            });
+
+            document.getElementById('eventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveEvent();
+            });
+
+            // Gestione degli annunci
+            document.getElementById('addAnnouncementBtn').addEventListener('click', function() {
+                openAnnouncementForm();
+            });
+
+            document.getElementById('cancelAnnouncementForm').addEventListener('click', function() {
+                document.getElementById('announcementFormModal').style.display = 'none';
+            });
+
+            document.getElementById('announcementForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveAnnouncement();
+            });
+
+            // Gestione della conferma di eliminazione
+            document.getElementById('cancelDelete').addEventListener('click', function() {
+                document.getElementById('deleteConfirmModal').style.display = 'none';
+            });
+        });
+        
+        // Dati dei membri della famiglia
+        const membriFamiglia = [
+            { nome: "Lorenzo", cognome: "Gaido", dataNascita: "2013-07-12", eta: 11 },
+            { nome: "Christian", cognome: "Gaido", dataNascita: "2008-09-09", eta: 16 },
+            { nome: "Monica", cognome: "Saccà", dataNascita: "1977-10-03", eta: 47 },
+            { nome: "Maurizio", cognome: "Gaido", dataNascita: "1976-04-15", eta: 77 },
+            { nome: "Gianfranco", cognome: "D'Angelo", dataNascita: "1948-06-07", eta: 75 },
+            { nome: "Gianna", cognome: "Saccà", dataNascita: "1950-03-16", eta: 48 },
+            { nome: "Francesco", cognome: "Saccà", dataNascita: "1983-09-07", eta: 41 },
+            { nome: "Barbara", cognome: "Saccà", dataNascita: "1973-06-15", eta: 51 }
+        ];
+        
+        // Funzione per caricare i membri della famiglia
+        function loadFamilyMembers() {
+            const membriContainer = document.getElementById('membriContent');
+            membriContainer.innerHTML = '';
+
+            membriFamiglia.forEach(membro => {
+                const memberCard = document.createElement('div');
+                memberCard.className = 'member-card';
+
+                const initials = membro.nome.charAt(0) + membro.cognome.charAt(0);
+
+                memberCard.innerHTML = `
+                    <div class="member-avatar">${initials}</div>
+                    <div class="member-name">${membro.nome} ${membro.cognome}</div>
+                    <div class="member-details">
+                        <div class="member-info">Età: ${membro.eta} anni</div>
+                        <div class="member-info">Data di nascita: ${formatDate(membro.dataNascita)}</div>
+                    </div>
+                    <div class="expand-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                `;
+
+                // Aggiungi l'evento click per espandere/contrarre la card
+                memberCard.addEventListener('click', function() {
+                    this.classList.toggle('expanded');
+
+                    // Aggiungi un effetto sonoro leggero (opzionale)
+                    if (this.classList.contains('expanded')) {
+                        playExpandSound();
+                    }
+                });
+
+                // Aggiungi un effetto di entrata con ritardo
+                memberCard.style.opacity = '0';
+                memberCard.style.transform = 'translateY(30px)';
+                memberCard.style.animation = `fadeInUp 0.6s forwards ${0.1 * membriFamiglia.indexOf(membro)}s`;
+
+                membriContainer.appendChild(memberCard);
+            });
+        }
+
+        // Funzione per riprodurre un suono leggero quando si espande una card (opzionale)
+        function playExpandSound() {
+            // Questa funzione è opzionale e può essere implementata se si desidera aggiungere un effetto sonoro
+            // const sound = new Audio('path/to/sound.mp3');
+            // sound.volume = 0.2;
+            // sound.play();
+        }
+        
+        // Funzione per formattare la data
+        function formatDate(dateString) {
+            // Verifica se la data è già in formato italiano (come "12 Luglio 2013")
+            if (dateString.includes(' ') && !dateString.includes('-')) {
+                return dateString;
+            }
+
+            // Altrimenti, formatta la data dal formato ISO
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
+        }
+
+        // Funzione per gestire il menu mobile
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                this.classList.toggle('active');
+
+                // Cambia l'icona del menu
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.replace('fa-bars', 'fa-times');
+                } else {
+                    icon.classList.replace('fa-times', 'fa-bars');
+                }
+            });
+
+            // Chiudi il menu quando si clicca su un elemento del menu (solo su mobile)
+            if (window.innerWidth <= 768) {
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    });
+                });
+            }
+        }
+
+        // Funzione per scaricare i dati
+        function downloadData() {
+            // Prepara i dati da scaricare
+            const dataToDownload = {
+                membri: appData.membri,
+                eventi: appData.eventi,
+                annunci: appData.annunci
+            };
+
+            // Converti i dati in JSON
+            const jsonData = JSON.stringify(dataToDownload, null, 2);
+
+            // Crea un blob con i dati
+            const blob = new Blob([jsonData], { type: 'application/json' });
+
+            // Crea un URL per il blob
+            const url = URL.createObjectURL(blob);
+
+            // Crea un elemento <a> per il download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'famiglia_data.json';
+
+            // Aggiungi l'elemento al DOM, clicca su di esso e rimuovilo
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Rilascia l'URL
+            URL.revokeObjectURL(url);
+
+            // Mostra un messaggio di conferma
+            alert('Dati scaricati con successo!');
+        }
+
+        // Funzione per caricare i dati
+        function uploadData() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const uploadedData = JSON.parse(e.target.result);
+
+                        // Verifica che i dati caricati abbiano la struttura corretta
+                        if (uploadedData.membri && Array.isArray(uploadedData.membri) &&
+                            uploadedData.eventi && Array.isArray(uploadedData.eventi) &&
+                            uploadedData.annunci && Array.isArray(uploadedData.annunci)) {
+
+                            // Mantieni i permessi originali
+                            uploadedData.permessi = appData.permessi;
+
+                            // Aggiorna i dati dell'applicazione
+                            appData = uploadedData;
+                            membriFamiglia = uploadedData.membri;
+
+                            // Ricarica i dati nella UI
+                            loadFamilyMembers();
+                            loadEvents();
+                            loadAnnouncements();
+
+                            // Nascondi il modal
+                            document.getElementById('uploadModal').style.display = 'none';
+
+                            // Resetta il file input
+                            fileInput.value = '';
+
+                            // Mostra un messaggio di conferma
+                            alert('Dati caricati con successo!');
+                        } else {
+                            alert('Il file caricato non ha il formato corretto.');
+                        }
+                    } catch (error) {
+                        alert('Si è verificato un errore durante il caricamento del file: ' + error.message);
+                    }
+                };
+
+                reader.readAsText(file);
+            }
+        }
+
+        // Funzione per controllare i permessi dell'utente
+        function checkUserPermissions(nome) {
+            const isAdmin = appData.permessi.admin.includes(nome);
+
+            // Mostra/nascondi i controlli di amministrazione
+            const adminControls = document.querySelectorAll('.admin-controls');
+            adminControls.forEach(control => {
+                control.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            return isAdmin;
+        }
+
+        // Funzione per caricare gli eventi
+        function loadEvents() {
+            const eventiContainer = document.getElementById('eventiContainer');
+            eventiContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.eventi.forEach((evento, index) => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+
+                let itemHTML = `
+                    <div class="event-date">${evento.data}</div>
+                    <div class="event-title">${evento.titolo}</div>
+                    <div class="event-description">${evento.descrizione}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editEvent(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteEvent(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                eventItem.innerHTML = itemHTML;
+                eventiContainer.appendChild(eventItem);
+            });
+        }
+
+        // Funzione per caricare gli annunci
+        function loadAnnouncements() {
+            const annunciContainer = document.getElementById('annunciContainer');
+            annunciContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.annunci.forEach((annuncio, index) => {
+                const announcementItem = document.createElement('div');
+                announcementItem.className = 'announcement-item';
+
+                let itemHTML = `
+                    <div class="announcement-date">${annuncio.data}</div>
+                    <div class="announcement-title">${annuncio.titolo}</div>
+                    <div class="announcement-content">${annuncio.contenuto}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editAnnouncement(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteAnnouncement(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                announcementItem.innerHTML = itemHTML;
+                annunciContainer.appendChild(announcementItem);
+            });
+        }
+
+        // Funzione per aprire il form degli eventi (aggiunta)
+        function openEventForm() {
+            document.getElementById('eventFormTitle').textContent = 'Aggiungi evento';
+            document.getElementById('eventIndex').value = -1;
+            document.getElementById('eventData').value = '';
+            document.getElementById('eventTitolo').value = '';
+            document.getElementById('eventDescrizione').value = '';
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un evento
+        function editEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('eventFormTitle').textContent = 'Modifica evento';
+            document.getElementById('eventIndex').value = index;
+            document.getElementById('eventData').value = evento.data;
+            document.getElementById('eventTitolo').value = evento.titolo;
+            document.getElementById('eventDescrizione').value = evento.descrizione;
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un evento
+        function saveEvent() {
+            const index = parseInt(document.getElementById('eventIndex').value);
+            const data = document.getElementById('eventData').value.trim();
+            const titolo = document.getElementById('eventTitolo').value.trim();
+            const descrizione = document.getElementById('eventDescrizione').value.trim();
+
+            const evento = {
+                data: data,
+                titolo: titolo,
+                descrizione: descrizione
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo evento
+                appData.eventi.push(evento);
+            } else {
+                // Modifica evento esistente
+                appData.eventi[index] = evento;
+            }
+
+            // Ricarica gli eventi
+            loadEvents();
+
+            // Chiudi il modal
+            document.getElementById('eventFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un evento
+        function confirmDeleteEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'evento "${evento.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteEvent(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un evento
+        function deleteEvent(index) {
+            appData.eventi.splice(index, 1);
+            loadEvents();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        // Funzione per aprire il form degli annunci (aggiunta)
+        function openAnnouncementForm() {
+            document.getElementById('announcementFormTitle').textContent = 'Aggiungi annuncio';
+            document.getElementById('announcementIndex').value = -1;
+            document.getElementById('announcementData').value = '';
+            document.getElementById('announcementTitolo').value = '';
+            document.getElementById('announcementContenuto').value = '';
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un annuncio
+        function editAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('announcementFormTitle').textContent = 'Modifica annuncio';
+            document.getElementById('announcementIndex').value = index;
+            document.getElementById('announcementData').value = annuncio.data;
+            document.getElementById('announcementTitolo').value = annuncio.titolo;
+            document.getElementById('announcementContenuto').value = annuncio.contenuto;
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un annuncio
+        function saveAnnouncement() {
+            const index = parseInt(document.getElementById('announcementIndex').value);
+            const data = document.getElementById('announcementData').value.trim();
+            const titolo = document.getElementById('announcementTitolo').value.trim();
+            const contenuto = document.getElementById('announcementContenuto').value.trim();
+
+            const annuncio = {
+                data: data,
+                titolo: titolo,
+                contenuto: contenuto
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo annuncio
+                appData.annunci.push(annuncio);
+            } else {
+                // Modifica annuncio esistente
+                appData.annunci[index] = annuncio;
+            }
+
+            // Ricarica gli annunci
+            loadAnnouncements();
+
+            // Chiudi il modal
+            document.getElementById('announcementFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un annuncio
+        function confirmDeleteAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'annuncio "${annuncio.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteAnnouncement(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un annuncio
+        function deleteAnnouncement(index) {
+            appData.annunci.splice(index, 1);
+            loadAnnouncements();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+        
+        // Funzione per gestire il menu
+        function setupMenu() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
+            const mainContent = document.querySelector('.main-content');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Se l'elemento è già attivo, non fare nulla
+                    if (this.classList.contains('active')) return;
+
+                    // Rimuove la classe active da tutti gli elementi del menu
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // Aggiunge la classe active all'elemento cliccato
+                    this.classList.add('active');
+
+                    // Effetto di transizione per il contenuto
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transform = 'translateY(20px)';
+
+                    const page = this.getAttribute('data-page');
+
+                    // Aggiorna il titolo della pagina con animazione
+                    animateTextChange(pageTitle, getTitleForPage(page));
+
+                    // Dopo un breve ritardo, cambia il contenuto e mostra con animazione
+                    setTimeout(() => {
+                        // Nasconde tutte le sezioni di contenuto
+                        contentSections.forEach(section => section.style.display = 'none');
+
+                        // Mostra la sezione corrispondente
+                        document.getElementById(`${page}Content`).style.display = page === 'membri' ? 'grid' : 'block';
+
+                        // Anima il ritorno del contenuto
+                        mainContent.style.opacity = '1';
+                        mainContent.style.transform = 'translateY(0)';
+
+                        // Resetta le animazioni degli elementi nelle liste
+                        if (page === 'eventi' || page === 'annunci') {
+                            const items = document.querySelectorAll(`.${page}-item`);
+                            items.forEach((item, index) => {
+                                item.style.animation = 'none';
+                                setTimeout(() => {
+                                    item.style.animation = `slideUp 0.5s forwards ${index * 0.1}s`;
+                                }, 10);
+                            });
+                        }
+                    }, 300);
+                });
+            });
+
+            // Funzione per ottenere il titolo in base alla pagina
+            function getTitleForPage(page) {
+                switch(page) {
+                    case 'membri': return 'Membri della Famiglia';
+                    case 'eventi': return 'Eventi';
+                    case 'annunci': return 'Annunci';
+                    default: return '';
+                }
+            }
+
+            // Funzione per animare il cambio di testo
+            function animateTextChange(element, newText) {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+
+                setTimeout(() => {
+                    element.textContent = newText;
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 200);
+            }
+
+            // Aggiungi transizioni CSS al contenuto principale
+            mainContent.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            pageTitle.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        }
+        
+        // Funzione per gestire il tema
+        function setupTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const themeText = themeToggle.querySelector('span');
+            
+            // Controlla se c'è un tema salvato
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeText.textContent = 'Modalità chiara';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Modalità chiara';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Modalità scura';
+                }
+            });
+        }
+    </script>
+</body>
+</html>            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
+        }
+
+        // Funzione per gestire il menu mobile
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                this.classList.toggle('active');
+
+                // Cambia l'icona del menu
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.replace('fa-bars', 'fa-times');
+                } else {
+                    icon.classList.replace('fa-times', 'fa-bars');
+                }
+            });
+
+            // Chiudi il menu quando si clicca su un elemento del menu (solo su mobile)
+            if (window.innerWidth <= 768) {
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    });
+                });
+            }
+        }
+
+        // Funzione per scaricare i dati
+        function downloadData() {
+            // Prepara i dati da scaricare
+            const dataToDownload = {
+                membri: appData.membri,
+                eventi: appData.eventi,
+                annunci: appData.annunci
+            };
+
+            // Converti i dati in JSON
+            const jsonData = JSON.stringify(dataToDownload, null, 2);
+
+            // Crea un blob con i dati
+            const blob = new Blob([jsonData], { type: 'application/json' });
+
+            // Crea un URL per il blob
+            const url = URL.createObjectURL(blob);
+
+            // Crea un elemento <a> per il download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'famiglia_data.json';
+
+            // Aggiungi l'elemento al DOM, clicca su di esso e rimuovilo
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Rilascia l'URL
+            URL.revokeObjectURL(url);
+
+            // Mostra un messaggio di conferma
+            alert('Dati scaricati con successo!');
+        }
+
+        // Funzione per caricare i dati
+        function uploadData() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const uploadedData = JSON.parse(e.target.result);
+
+                        // Verifica che i dati caricati abbiano la struttura corretta
+                        if (uploadedData.membri && Array.isArray(uploadedData.membri) &&
+                            uploadedData.eventi && Array.isArray(uploadedData.eventi) &&
+                            uploadedData.annunci && Array.isArray(uploadedData.annunci)) {
+
+                            // Mantieni i permessi originali
+                            uploadedData.permessi = appData.permessi;
+
+                            // Aggiorna i dati dell'applicazione
+                            appData = uploadedData;
+                            membriFamiglia = uploadedData.membri;
+
+                            // Ricarica i dati nella UI
+                            loadFamilyMembers();
+                            loadEvents();
+                            loadAnnouncements();
+
+                            // Nascondi il modal
+                            document.getElementById('uploadModal').style.display = 'none';
+
+                            // Resetta il file input
+                            fileInput.value = '';
+
+                            // Mostra un messaggio di conferma
+                            alert('Dati caricati con successo!');
+                        } else {
+                            alert('Il file caricato non ha il formato corretto.');
+                        }
+                    } catch (error) {
+                        alert('Si è verificato un errore durante il caricamento del file: ' + error.message);
+                    }
+                };
+
+                reader.readAsText(file);
+            }
+        }
+
+        // Funzione per controllare i permessi dell'utente
+        function checkUserPermissions(nome) {
+            const isAdmin = appData.permessi.admin.includes(nome);
+
+            // Mostra/nascondi i controlli di amministrazione
+            const adminControls = document.querySelectorAll('.admin-controls');
+            adminControls.forEach(control => {
+                control.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            return isAdmin;
+        }
+
+        // Funzione per caricare gli eventi
+        function loadEvents() {
+            const eventiContainer = document.getElementById('eventiContainer');
+            eventiContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.eventi.forEach((evento, index) => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+
+                let itemHTML = `
+                    <div class="event-date">${evento.data}</div>
+                    <div class="event-title">${evento.titolo}</div>
+                    <div class="event-description">${evento.descrizione}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editEvent(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteEvent(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                eventItem.innerHTML = itemHTML;
+                eventiContainer.appendChild(eventItem);
+            });
+        }
+
+        // Funzione per caricare gli annunci
+        function loadAnnouncements() {
+            const annunciContainer = document.getElementById('annunciContainer');
+            annunciContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.annunci.forEach((annuncio, index) => {
+                const announcementItem = document.createElement('div');
+                announcementItem.className = 'announcement-item';
+
+                let itemHTML = `
+                    <div class="announcement-date">${annuncio.data}</div>
+                    <div class="announcement-title">${annuncio.titolo}</div>
+                    <div class="announcement-content">${annuncio.contenuto}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editAnnouncement(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteAnnouncement(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                announcementItem.innerHTML = itemHTML;
+                annunciContainer.appendChild(announcementItem);
+            });
+        }
+
+        // Funzione per aprire il form degli eventi (aggiunta)
+        function openEventForm() {
+            document.getElementById('eventFormTitle').textContent = 'Aggiungi evento';
+            document.getElementById('eventIndex').value = -1;
+            document.getElementById('eventData').value = '';
+            document.getElementById('eventTitolo').value = '';
+            document.getElementById('eventDescrizione').value = '';
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un evento
+        function editEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('eventFormTitle').textContent = 'Modifica evento';
+            document.getElementById('eventIndex').value = index;
+            document.getElementById('eventData').value = evento.data;
+            document.getElementById('eventTitolo').value = evento.titolo;
+            document.getElementById('eventDescrizione').value = evento.descrizione;
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un evento
+        function saveEvent() {
+            const index = parseInt(document.getElementById('eventIndex').value);
+            const data = document.getElementById('eventData').value.trim();
+            const titolo = document.getElementById('eventTitolo').value.trim();
+            const descrizione = document.getElementById('eventDescrizione').value.trim();
+
+            const evento = {
+                data: data,
+                titolo: titolo,
+                descrizione: descrizione
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo evento
+                appData.eventi.push(evento);
+            } else {
+                // Modifica evento esistente
+                appData.eventi[index] = evento;
+            }
+
+            // Ricarica gli eventi
+            loadEvents();
+
+            // Chiudi il modal
+            document.getElementById('eventFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un evento
+        function confirmDeleteEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'evento "${evento.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteEvent(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un evento
+        function deleteEvent(index) {
+            appData.eventi.splice(index, 1);
+            loadEvents();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        // Funzione per aprire il form degli annunci (aggiunta)
+        function openAnnouncementForm() {
+            document.getElementById('announcementFormTitle').textContent = 'Aggiungi annuncio';
+            document.getElementById('announcementIndex').value = -1;
+            document.getElementById('announcementData').value = '';
+            document.getElementById('announcementTitolo').value = '';
+            document.getElementById('announcementContenuto').value = '';
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un annuncio
+        function editAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('announcementFormTitle').textContent = 'Modifica annuncio';
+            document.getElementById('announcementIndex').value = index;
+            document.getElementById('announcementData').value = annuncio.data;
+            document.getElementById('announcementTitolo').value = annuncio.titolo;
+            document.getElementById('announcementContenuto').value = annuncio.contenuto;
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un annuncio
+        function saveAnnouncement() {
+            const index = parseInt(document.getElementById('announcementIndex').value);
+            const data = document.getElementById('announcementData').value.trim();
+            const titolo = document.getElementById('announcementTitolo').value.trim();
+            const contenuto = document.getElementById('announcementContenuto').value.trim();
+
+            const annuncio = {
+                data: data,
+                titolo: titolo,
+                contenuto: contenuto
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo annuncio
+                appData.annunci.push(annuncio);
+            } else {
+                // Modifica annuncio esistente
+                appData.annunci[index] = annuncio;
+            }
+
+            // Ricarica gli annunci
+            loadAnnouncements();
+
+            // Chiudi il modal
+            document.getElementById('announcementFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un annuncio
+        function confirmDeleteAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'annuncio "${annuncio.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteAnnouncement(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un annuncio
+        function deleteAnnouncement(index) {
+            appData.annunci.splice(index, 1);
+            loadAnnouncements();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+        
+        // Funzione per gestire il menu
+        function setupMenu() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
+            const mainContent = document.querySelector('.main-content');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Se l'elemento è già attivo, non fare nulla
+                    if (this.classList.contains('active')) return;
+
+                    // Rimuove la classe active da tutti gli elementi del menu
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // Aggiunge la classe active all'elemento cliccato
+                    this.classList.add('active');
+
+                    // Effetto di transizione per il contenuto
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transform = 'translateY(20px)';
+
+                    const page = this.getAttribute('data-page');
+
+                    // Aggiorna il titolo della pagina con animazione
+                    animateTextChange(pageTitle, getTitleForPage(page));
+
+                    // Dopo un breve ritardo, cambia il contenuto e mostra con animazione
+                    setTimeout(() => {
+                        // Nasconde tutte le sezioni di contenuto
+                        contentSections.forEach(section => section.style.display = 'none');
+
+                        // Mostra la sezione corrispondente
+                        document.getElementById(`${page}Content`).style.display = page === 'membri' ? 'grid' : 'block';
+
+                        // Anima il ritorno del contenuto
+                        mainContent.style.opacity = '1';
+                        mainContent.style.transform = 'translateY(0)';
+
+                        // Resetta le animazioni degli elementi nelle liste
+                        if (page === 'eventi' || page === 'annunci') {
+                            const items = document.querySelectorAll(`.${page}-item`);
+                            items.forEach((item, index) => {
+                                item.style.animation = 'none';
+                                setTimeout(() => {
+                                    item.style.animation = `slideUp 0.5s forwards ${index * 0.1}s`;
+                                }, 10);
+                            });
+                        }
+                    }, 300);
+                });
+            });
+
+            // Funzione per ottenere il titolo in base alla pagina
+            function getTitleForPage(page) {
+                switch(page) {
+                    case 'membri': return 'Membri della Famiglia';
+                    case 'eventi': return 'Eventi';
+                    case 'annunci': return 'Annunci';
+                    default: return '';
+                }
+            }
+
+            // Funzione per animare il cambio di testo
+            function animateTextChange(element, newText) {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+
+                setTimeout(() => {
+                    element.textContent = newText;
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 200);
+            }
+
+            // Aggiungi transizioni CSS al contenuto principale
+            mainContent.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            pageTitle.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        }
+        
+        // Funzione per gestire il tema
+        function setupTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const themeText = themeToggle.querySelector('span');
+            
+            // Controlla se c'è un tema salvato
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeText.textContent = 'Modalità chiara';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Modalità chiara';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Modalità scura';
+                }
+            });
+        }
+    </script>
+</body>
+</html>            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('it-IT', options);
+        }
+
+        // Funzione per gestire il menu mobile
+        function setupMobileMenu() {
+            const menuToggle = document.getElementById('menuToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                this.classList.toggle('active');
+
+                // Cambia l'icona del menu
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.classList.replace('fa-bars', 'fa-times');
+                } else {
+                    icon.classList.replace('fa-times', 'fa-bars');
+                }
+            });
+
+            // Chiudi il menu quando si clicca su un elemento del menu (solo su mobile)
+            if (window.innerWidth <= 768) {
+                const menuItems = document.querySelectorAll('.menu-item');
+                menuItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    });
+                });
+            }
+        }
+
+        // Funzione per scaricare i dati
+        function downloadData() {
+            // Prepara i dati da scaricare
+            const dataToDownload = {
+                membri: appData.membri,
+                eventi: appData.eventi,
+                annunci: appData.annunci
+            };
+
+            // Converti i dati in JSON
+            const jsonData = JSON.stringify(dataToDownload, null, 2);
+
+            // Crea un blob con i dati
+            const blob = new Blob([jsonData], { type: 'application/json' });
+
+            // Crea un URL per il blob
+            const url = URL.createObjectURL(blob);
+
+            // Crea un elemento <a> per il download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'famiglia_data.json';
+
+            // Aggiungi l'elemento al DOM, clicca su di esso e rimuovilo
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Rilascia l'URL
+            URL.revokeObjectURL(url);
+
+            // Mostra un messaggio di conferma
+            alert('Dati scaricati con successo!');
+        }
+
+        // Funzione per caricare i dati
+        function uploadData() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        const uploadedData = JSON.parse(e.target.result);
+
+                        // Verifica che i dati caricati abbiano la struttura corretta
+                        if (uploadedData.membri && Array.isArray(uploadedData.membri) &&
+                            uploadedData.eventi && Array.isArray(uploadedData.eventi) &&
+                            uploadedData.annunci && Array.isArray(uploadedData.annunci)) {
+
+                            // Mantieni i permessi originali
+                            uploadedData.permessi = appData.permessi;
+
+                            // Aggiorna i dati dell'applicazione
+                            appData = uploadedData;
+                            membriFamiglia = uploadedData.membri;
+
+                            // Ricarica i dati nella UI
+                            loadFamilyMembers();
+                            loadEvents();
+                            loadAnnouncements();
+
+                            // Nascondi il modal
+                            document.getElementById('uploadModal').style.display = 'none';
+
+                            // Resetta il file input
+                            fileInput.value = '';
+
+                            // Mostra un messaggio di conferma
+                            alert('Dati caricati con successo!');
+                        } else {
+                            alert('Il file caricato non ha il formato corretto.');
+                        }
+                    } catch (error) {
+                        alert('Si è verificato un errore durante il caricamento del file: ' + error.message);
+                    }
+                };
+
+                reader.readAsText(file);
+            }
+        }
+
+        // Funzione per controllare i permessi dell'utente
+        function checkUserPermissions(nome) {
+            const isAdmin = appData.permessi.admin.includes(nome);
+
+            // Mostra/nascondi i controlli di amministrazione
+            const adminControls = document.querySelectorAll('.admin-controls');
+            adminControls.forEach(control => {
+                control.style.display = isAdmin ? 'flex' : 'none';
+            });
+
+            return isAdmin;
+        }
+
+        // Funzione per caricare gli eventi
+        function loadEvents() {
+            const eventiContainer = document.getElementById('eventiContainer');
+            eventiContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.eventi.forEach((evento, index) => {
+                const eventItem = document.createElement('div');
+                eventItem.className = 'event-item';
+
+                let itemHTML = `
+                    <div class="event-date">${evento.data}</div>
+                    <div class="event-title">${evento.titolo}</div>
+                    <div class="event-description">${evento.descrizione}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editEvent(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteEvent(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                eventItem.innerHTML = itemHTML;
+                eventiContainer.appendChild(eventItem);
+            });
+        }
+
+        // Funzione per caricare gli annunci
+        function loadAnnouncements() {
+            const annunciContainer = document.getElementById('annunciContainer');
+            annunciContainer.innerHTML = '';
+
+            const utenteCorrente = JSON.parse(sessionStorage.getItem('utenteCorrente'));
+            const isAdmin = checkUserPermissions(utenteCorrente.nome);
+
+            appData.annunci.forEach((annuncio, index) => {
+                const announcementItem = document.createElement('div');
+                announcementItem.className = 'announcement-item';
+
+                let itemHTML = `
+                    <div class="announcement-date">${annuncio.data}</div>
+                    <div class="announcement-title">${annuncio.titolo}</div>
+                    <div class="announcement-content">${annuncio.contenuto}</div>
+                `;
+
+                // Aggiungi i controlli di modifica/eliminazione solo per gli amministratori
+                if (isAdmin) {
+                    itemHTML += `
+                        <div class="item-actions">
+                            <button class="edit-btn" onclick="editAnnouncement(${index})">
+                                <i class="fas fa-edit"></i> Modifica
+                            </button>
+                            <button class="delete-btn" onclick="confirmDeleteAnnouncement(${index})">
+                                <i class="fas fa-trash-alt"></i> Elimina
+                            </button>
+                        </div>
+                    `;
+                }
+
+                announcementItem.innerHTML = itemHTML;
+                annunciContainer.appendChild(announcementItem);
+            });
+        }
+
+        // Funzione per aprire il form degli eventi (aggiunta)
+        function openEventForm() {
+            document.getElementById('eventFormTitle').textContent = 'Aggiungi evento';
+            document.getElementById('eventIndex').value = -1;
+            document.getElementById('eventData').value = '';
+            document.getElementById('eventTitolo').value = '';
+            document.getElementById('eventDescrizione').value = '';
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un evento
+        function editEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('eventFormTitle').textContent = 'Modifica evento';
+            document.getElementById('eventIndex').value = index;
+            document.getElementById('eventData').value = evento.data;
+            document.getElementById('eventTitolo').value = evento.titolo;
+            document.getElementById('eventDescrizione').value = evento.descrizione;
+            document.getElementById('eventFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un evento
+        function saveEvent() {
+            const index = parseInt(document.getElementById('eventIndex').value);
+            const data = document.getElementById('eventData').value.trim();
+            const titolo = document.getElementById('eventTitolo').value.trim();
+            const descrizione = document.getElementById('eventDescrizione').value.trim();
+
+            const evento = {
+                data: data,
+                titolo: titolo,
+                descrizione: descrizione
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo evento
+                appData.eventi.push(evento);
+            } else {
+                // Modifica evento esistente
+                appData.eventi[index] = evento;
+            }
+
+            // Ricarica gli eventi
+            loadEvents();
+
+            // Chiudi il modal
+            document.getElementById('eventFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un evento
+        function confirmDeleteEvent(index) {
+            const evento = appData.eventi[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'evento "${evento.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteEvent(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un evento
+        function deleteEvent(index) {
+            appData.eventi.splice(index, 1);
+            loadEvents();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+
+        // Funzione per aprire il form degli annunci (aggiunta)
+        function openAnnouncementForm() {
+            document.getElementById('announcementFormTitle').textContent = 'Aggiungi annuncio';
+            document.getElementById('announcementIndex').value = -1;
+            document.getElementById('announcementData').value = '';
+            document.getElementById('announcementTitolo').value = '';
+            document.getElementById('announcementContenuto').value = '';
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per modificare un annuncio
+        function editAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('announcementFormTitle').textContent = 'Modifica annuncio';
+            document.getElementById('announcementIndex').value = index;
+            document.getElementById('announcementData').value = annuncio.data;
+            document.getElementById('announcementTitolo').value = annuncio.titolo;
+            document.getElementById('announcementContenuto').value = annuncio.contenuto;
+            document.getElementById('announcementFormModal').style.display = 'flex';
+        }
+
+        // Funzione per salvare un annuncio
+        function saveAnnouncement() {
+            const index = parseInt(document.getElementById('announcementIndex').value);
+            const data = document.getElementById('announcementData').value.trim();
+            const titolo = document.getElementById('announcementTitolo').value.trim();
+            const contenuto = document.getElementById('announcementContenuto').value.trim();
+
+            const annuncio = {
+                data: data,
+                titolo: titolo,
+                contenuto: contenuto
+            };
+
+            if (index === -1) {
+                // Aggiungi nuovo annuncio
+                appData.annunci.push(annuncio);
+            } else {
+                // Modifica annuncio esistente
+                appData.annunci[index] = annuncio;
+            }
+
+            // Ricarica gli annunci
+            loadAnnouncements();
+
+            // Chiudi il modal
+            document.getElementById('announcementFormModal').style.display = 'none';
+        }
+
+        // Funzione per confermare l'eliminazione di un annuncio
+        function confirmDeleteAnnouncement(index) {
+            const annuncio = appData.annunci[index];
+            document.getElementById('deleteConfirmMessage').textContent = `Sei sicuro di voler eliminare l'annuncio "${annuncio.titolo}"? Questa azione non può essere annullata.`;
+
+            // Imposta la funzione di callback per la conferma
+            document.getElementById('confirmDelete').onclick = function() {
+                deleteAnnouncement(index);
+            };
+
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        // Funzione per eliminare un annuncio
+        function deleteAnnouncement(index) {
+            appData.annunci.splice(index, 1);
+            loadAnnouncements();
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+        }
+        
+        // Funzione per gestire il menu
+        function setupMenu() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const pageTitle = document.getElementById('pageTitle');
+            const mainContent = document.querySelector('.main-content');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Se l'elemento è già attivo, non fare nulla
+                    if (this.classList.contains('active')) return;
+
+                    // Rimuove la classe active da tutti gli elementi del menu
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    // Aggiunge la classe active all'elemento cliccato
+                    this.classList.add('active');
+
+                    // Effetto di transizione per il contenuto
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transform = 'translateY(20px)';
+
+                    const page = this.getAttribute('data-page');
+
+                    // Aggiorna il titolo della pagina con animazione
+                    animateTextChange(pageTitle, getTitleForPage(page));
+
+                    // Dopo un breve ritardo, cambia il contenuto e mostra con animazione
+                    setTimeout(() => {
+                        // Nasconde tutte le sezioni di contenuto
+                        contentSections.forEach(section => section.style.display = 'none');
+
+                        // Mostra la sezione corrispondente
+                        document.getElementById(`${page}Content`).style.display = page === 'membri' ? 'grid' : 'block';
+
+                        // Anima il ritorno del contenuto
+                        mainContent.style.opacity = '1';
+                        mainContent.style.transform = 'translateY(0)';
+
+                        // Resetta le animazioni degli elementi nelle liste
+                        if (page === 'eventi' || page === 'annunci') {
+                            const items = document.querySelectorAll(`.${page}-item`);
+                            items.forEach((item, index) => {
+                                item.style.animation = 'none';
+                                setTimeout(() => {
+                                    item.style.animation = `slideUp 0.5s forwards ${index * 0.1}s`;
+                                }, 10);
+                            });
+                        }
+                    }, 300);
+                });
+            });
+
+            // Funzione per ottenere il titolo in base alla pagina
+            function getTitleForPage(page) {
+                switch(page) {
+                    case 'membri': return 'Membri della Famiglia';
+                    case 'eventi': return 'Eventi';
+                    case 'annunci': return 'Annunci';
+                    default: return '';
+                }
+            }
+
+            // Funzione per animare il cambio di testo
+            function animateTextChange(element, newText) {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+
+                setTimeout(() => {
+                    element.textContent = newText;
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 200);
+            }
+
+            // Aggiungi transizioni CSS al contenuto principale
+            mainContent.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            pageTitle.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        }
+        
+        // Funzione per gestire il tema
+        function setupTheme() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+            const themeText = themeToggle.querySelector('span');
+            
+            // Controlla se c'è un tema salvato
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                themeText.textContent = 'Modalità chiara';
+            }
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Modalità chiara';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Modalità scura';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

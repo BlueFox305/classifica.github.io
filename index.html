@@ -3,207 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Obiettivi</title>
+    <title>Dashboard Famiglia - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Stile CSS */
-        body {
-            font-family: 'Arial', sans-serif;
-            color: #fff;
-            text-align: center;
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6b8cbe;
+            --accent-color: #ff9a3c;
+            --text-color: #333;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --primary-color: #3a5a8c;
+            --secondary-color: #5a7aad;
+            --accent-color: #ff8c2a;
+            --text-color: #e0e0e0;
+            --bg-color: #1a1a2e;
+            --card-bg: #2a2a42;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            background-image: url('https://www.fractalcamo.com/uploads/5/9/0/2/5902948/s189772745713394276_p3856_i147_w750.jpeg');
-            background-size: 64px 64px; /* Dimensione di un blocco di terra */
-            background-repeat: repeat; /* Ripete l'immagine in orizzontale e verticale */
+            transition: all 0.3s ease;
         }
 
-        .container {
-            background-color: rgba(74, 74, 74, 0.8); /* Sfondo semi-trasparente */
-            padding: 20px;
+        .login-container {
+            background-color: var(--card-bg);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 300px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
         }
 
         h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
         }
 
-        #obiettivi {
+        .form-group {
+            margin-bottom: 1.2rem;
             text-align: left;
-            margin-bottom: 20px;
         }
 
-        .obiettivo {
-            display: flex;
-            align-items: center;
-            margin: 10px 0;
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
         }
 
-        .obiettivo img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            outline: none;
         }
 
         button {
-            background-color: #8b8b8b;
-            color: #fff;
+            background-color: var(--primary-color);
+            color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
             border-radius: 5px;
-            margin: 5px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 1rem;
         }
 
         button:hover {
-            background-color: #a0a0a0;
+            background-color: var(--secondary-color);
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #4a4a4a;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .icon-list {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .icon-list img {
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            border-radius: 5px;
-        }
-
-        .icon-list img.selected {
-            border-color: #fff;
-        }
-
-        #testoObiettivo {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
             border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+            padding: 0.5rem;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Minecraft Obiettivi</h1>
-        <div id="obiettivi">
-            <!-- Obiettivi esistenti -->
-            <div class="obiettivo">
-                <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/01/Iron_Sword_JE1_BE1.png/revision/latest?cb=20190516111355" alt="Icona">
-                <span>Costruisci una casa</span>
-            </div>
-        </div>
-        <button id="creaObiettivo">Crea Obiettivo</button>
-        <button id="reset">Reset Obiettivi</button>
-    </div>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
 
-    <!-- Modal per la creazione di un obiettivo -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2>Scegli un'icona</h2>
-            <div class="icon-list">
-                <img src="https://art.pixilart.com/3b476bf896e8d4e.png" alt="Spada di ferro" data-icon="spada">
-                <img src="https://i.redd.it/e3854vrewq551.jpg" alt="Diamond block" data-icon="diamond block">
-                <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e7/Diamond_Pickaxe_JE3_BE3.png/revision/latest/scale-to-width/360?cb=20200226193952" alt="Iron Sword" data-icon="">
-            </div>
-            <input type="text" id="testoObiettivo" placeholder="Inserisci il testo dell'obiettivo">
-            <button id="confermaObiettivo">Conferma</button>
-            <button id="annullaObiettivo">Annulla</button>
+    <div class="login-container">
+        <div class="login-logo">
+            <i class="fas fa-home"></i>
         </div>
+        <h1>Dashboard Famiglia</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+            <div class="form-group">
+                <label for="cognome">Cognome</label>
+                <input type="text" id="cognome" name="cognome" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Accedi</button>
+            <p class="error-message" id="errorMessage">Nome utente o password non validi</p>
+        </form>
     </div>
 
     <script>
-        // JavaScript
-        const modal = document.getElementById('modal');
-        const creaObiettivoBtn = document.getElementById('creaObiettivo');
-        const confermaObiettivoBtn = document.getElementById('confermaObiettivo');
-        const annullaObiettivoBtn = document.getElementById('annullaObiettivo');
-        const iconList = document.querySelectorAll('.icon-list img');
-        const obiettiviContainer = document.getElementById('obiettivi');
-        const resetBtn = document.getElementById('reset');
+        // Dati dei membri della famiglia (in un'applicazione reale, questi dati sarebbero in un database)
+        const membriFamiglia = [
+            { nome: "Lorenzo", cognome: "Gaido", dataNascita: "12 Luglio 2013", eta: 11 },
+            { nome: "Christian", cognome: "Gaido", dataNascita: "9 Settembre 2008", eta: 16 },
+            { nome: "Monica", cognome: "Saccà", dataNascita: "3 Ottobre 1977", eta: 47 },
+            { nome: "Maurizio", cognome: "Gaido", dataNascita: "15 Aprile 1976", eta: 77 },
+            { nome: "Gianfranco", cognome: "D'Angelo", dataNascita: "7 Giugno 1948", eta: 75 },
+            { nome: "Gianna", cognome: "Saccà", dataNascita: "16 Marzo 1950", eta: 48 },
+            { nome: "Francesco", cognome: "Saccà", dataNascita: "7 Settembre 1983", eta: 41 },
+            { nome: "Barbara", cognome: "Saccà", dataNascita: "15 Giugno 1973", eta: 51 }
+        ];
 
-        let selectedIcon = null;
+        // Password universale
+        const PASSWORD = "Famiglia2025";
 
-        // Apri il modal per creare un obiettivo
-        creaObiettivoBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
+        // Gestione del tema
+        const themeToggle = document.getElementById('themeToggle');
+        const icon = themeToggle.querySelector('i');
 
-        // Seleziona un'icona
-        iconList.forEach(icon => {
-            icon.addEventListener('click', () => {
-                iconList.forEach(i => i.classList.remove('selected'));
-                icon.classList.add('selected');
-                selectedIcon = icon.src;
-            });
-        });
+        // Controlla se c'è un tema salvato
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
 
-        // Conferma la creazione dell'obiettivo
-        confermaObiettivoBtn.addEventListener('click', () => {
-            const testoObiettivo = document.getElementById('testoObiettivo').value;
-            if (testoObiettivo && selectedIcon) {
-                const nuovoObiettivo = document.createElement('div');
-                nuovoObiettivo.className = 'obiettivo';
-                nuovoObiettivo.innerHTML = `
-                    <img src="${selectedIcon}" alt="Icona">
-                    <span>${testoObiettivo}</span>
-                `;
-                obiettiviContainer.appendChild(nuovoObiettivo);
-                modal.style.display = 'none';
-                resetSelections();
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
             } else {
-                alert('Seleziona un\'icona e inserisci un testo per l\'obiettivo!');
+                localStorage.setItem('theme', 'light');
+                icon.classList.replace('fa-sun', 'fa-moon');
             }
         });
 
-        // Annulla la creazione dell'obiettivo
-        annullaObiettivoBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-            resetSelections();
+        // Gestione del login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const cognome = document.getElementById('cognome').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Verifica la password
+            if (password !== PASSWORD) {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Cerca l'utente tra i membri della famiglia
+            const utente = membriFamiglia.find(membro => 
+                membro.nome.toLowerCase() === nome.toLowerCase() && 
+                membro.cognome.toLowerCase() === cognome.toLowerCase()
+            );
+            
+            if (utente) {
+                // Salva i dati dell'utente in sessionStorage
+                sessionStorage.setItem('utenteCorrente', JSON.stringify(utente));
+                // Reindirizza alla dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                errorMessage.style.display = 'block';
+            }
         });
-
-        // Reset degli obiettivi
-        resetBtn.addEventListener('click', () => {
-            obiettiviContainer.innerHTML = '';
-        });
-
-        // Resetta le selezioni nel modal
-        function resetSelections() {
-            document.getElementById('testoObiettivo').value = '';
-            iconList.forEach(icon => icon.classList.remove('selected'));
-            selectedIcon = null;
-        }
     </script>
 </body>
 </html>
